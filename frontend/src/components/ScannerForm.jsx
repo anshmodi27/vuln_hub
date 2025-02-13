@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import TerminalOutput from "./TerminalOutput";
-import { FaRocket, FaSyncAlt } from "react-icons/fa"; // For loading icon
+import { FaRocket, FaSyncAlt } from "react-icons/fa";
+const REACT_APP_SERVER = import.meta.env.VITE_REACT_APP_SERVER;
 
 const ScannerForm = () => {
   const [url, setUrl] = useState("");
@@ -18,7 +19,7 @@ const ScannerForm = () => {
     setOutput("⏳ Starting Scan...\n");
 
     try {
-      const response = await fetch("http://127.0.0.1:5000/scan", {
+      const response = await fetch(`${REACT_APP_SERVER}/scan`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ url: url.trim() }),

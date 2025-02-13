@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import WhoisOutput from "./WhoisOutput";
+const REACT_APP_SERVER = import.meta.env.VITE_REACT_APP_SERVER;
 
 const WhoisForm = () => {
   const [domain, setDomain] = useState("");
@@ -14,7 +15,7 @@ const WhoisForm = () => {
     setWhoisData(`Fetching WHOIS for ${domain}...`);
 
     try {
-      const response = await fetch("http://127.0.0.1:5000/whois", {
+      const response = await fetch(`${REACT_APP_SERVER}/whois`, {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: new URLSearchParams({ domain }),
