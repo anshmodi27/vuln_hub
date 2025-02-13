@@ -1,0 +1,65 @@
+@import "tailwindcss";
+
+body {
+  background-color: #c0c0c0; /* Classic Windows Gray */
+  font-family: "Tahoma", sans-serif; /* Windows 95 Font */
+  color: black;
+}
+
+/* Navbar */
+.navbar {
+  background: linear-gradient(to right, #000080, #1084d0);
+  color: white;
+  padding: 4px;
+  font-size: 14px;
+  font-weight: bold;
+  border-bottom: 2px solid #808080;
+}
+
+/* Sidebar */
+.sidebar {
+  background-color: #b0b0b0; /* Classic Windows Gray */
+  border-right: 2px solid #808080;
+  padding: 10px;
+}
+
+/* Window (Main Content) */
+.window {
+  background: white;
+  border: 2px solid #808080;
+  padding: 10px;
+  box-shadow: inset -2px -2px 0px #dfdfdf, inset 2px 2px 0px #3a3a3a;
+}
+
+/* Buttons */
+.btn {
+  background: #dfdfdf;
+  border: 2px solid #808080;
+  padding: 5px;
+  font-size: 14px;
+  width: 100%;
+  box-shadow: inset -2px -2px 0px #dfdfdf, inset 2px 2px 0px #3a3a3a;
+  cursor: pointer;
+  text-align: center;
+}
+.btn:active {
+  box-shadow: inset -2px -2px 0px #3a3a3a, inset 2px 2px 0px #dfdfdf;
+}
+
+/* Input Fields */
+.input-box {
+  background: white;
+  border: 2px solid #808080;
+  padding: 5px;
+  width: calc(100% - 12px);
+  font-size: 14px;
+}
+
+/* Terminal Output */
+.terminal {
+  background: white;
+  border: 2px solid #808080;
+  padding: 5px;
+  font-family: "Courier New", monospace;
+  color: black;
+}

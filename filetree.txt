@@ -1,0 +1,25 @@
+c:/Users/admin/Documents/Vuln_Scan/Vuln_Hub/
+├── app.py
+└── frontend/
+    ├── .gitignore
+    ├── eslint.config.js
+    ├── index.html
+    ├─] node_modules/ (ignored)
+    ├── package-lock.json
+    ├── package.json
+    ├── public/
+    │   └── vite.svg
+    ├── README.md
+    ├── src/
+    │   ├── App.jsx
+    │   ├── assets/
+    │   ├── components/
+    │   │   ├── Navbar.jsx
+    │   │   ├── ScannerForm.jsx
+    │   │   ├── Sidebar.jsx
+    │   │   ├── TerminalOutput.jsx
+    │   │   ├── whoisForm.jsx
+    │   │   └── WhoisOutput.jsx
+    │   ├── index.css
+    │   └── main.jsx
+    └── vite.config.js
