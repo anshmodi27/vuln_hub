@@ -53,6 +53,10 @@ body {
   padding: 5px;
   width: calc(100% - 12px);
   font-size: 14px;
+  outline: none;
+}
+.input-box:focus {
+  outline: none;
 }
 
 /* Terminal Output */

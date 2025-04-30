@@ -11,9 +11,9 @@ const TerminalOutput = ({ output }) => {
 
   return (
     <div ref={terminalRef} className="mt-5 terminal">
-      <pre className="whitespace-pre-wrap overflow-x-hidden min-h-[20px] max-h-[600px] transition-all duration-300 ease-in-out">
+      <p className="whitespace-pre-wrap overflow-x-hidden min-h-[20px] max-h-[600px] transition-all duration-300 ease-in-out font-semibold">
         {output}
-      </pre>
+      </p>
     </div>
   );
 };

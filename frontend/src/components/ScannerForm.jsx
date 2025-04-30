@@ -1,22 +1,23 @@
 import React, { useState } from "react";
 import TerminalOutput from "./TerminalOutput";
 import { FaRocket, FaSyncAlt } from "react-icons/fa";
+import VulnerabilitiesTable from "./VulnerabilitiesTable";
+
 const REACT_APP_SERVER = import.meta.env.VITE_REACT_APP_SERVER;
 
 const ScannerForm = () => {
   const [url, setUrl] = useState("");
   const [output, setOutput] = useState("⏳ Waiting for scan to start...\n");
+  const [vulnerabilities, setVulnerabilities] = useState([]);
   const [loading, setLoading] = useState(false);
 
   const startScan = async (e) => {
     e.preventDefault();
-    if (!url.trim()) {
-      setOutput("⚠️ Enter URL for scan.\n");
-      return;
-    }
+    if (!url.trim()) return;
 
     setLoading(true);
     setOutput("⏳ Starting Scan...\n");
+    setVulnerabilities([]);
 
     try {
       const response = await fetch(`${REACT_APP_SERVER}/scan`, {
@@ -27,61 +28,49 @@ const ScannerForm = () => {
 
       const reader = response.body.getReader();
       const decoder = new TextDecoder();
+      let fullText = "";
 
-      const readStream = async () => {
-        try {
-          while (true) {
-            const { done, value } = await reader.read();
-            if (done) {
-              setOutput((prev) => prev + "\n✅ Scan completed.\n");
-              setLoading(false);
-              break;
-            }
-
-            const chunk = decoder.decode(value, { stream: true });
-
-            setOutput((prev) => {
-              const prevLines = prev.split("\n");
-
-              // Prevent duplicate progress updates
-              if (prevLines.includes(chunk.trim())) {
-                return prev;
-              }
-
-              // Detect 100% completion and break the loop
-              if (
-                chunk.includes("⚡ Scan Progress: 100%") ||
-                chunk.includes("✅ Scan Completed")
-              ) {
-                return prev + chunk + "\n✅ Scan completed.\n";
-              }
-
-              return prev + chunk;
-            });
+      const read = async () => {
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) {
+            await fetchResults();
+            setLoading(false);
+            break;
           }
-        } catch (error) {
-          setOutput((prev) => prev + "\n❌ Error reading scan output.\n");
-          setLoading(false);
+          const chunk = decoder.decode(value, { stream: true });
+          fullText += chunk;
+          setOutput((prev) => prev + chunk);
         }
       };
 
-      readStream();
-    } catch (error) {
-      setOutput((prev) => prev + "\n❌ Error during scanning.\n");
+      read();
+    } catch (err) {
+      setOutput((prev) => prev + `\n❌ Error: ${err.message}\n`);
       setLoading(false);
+    }
+  };
+
+  const fetchResults = async () => {
+    try {
+      const res = await fetch(`${REACT_APP_SERVER}/results`);
+      const data = await res.json();
+      setVulnerabilities(data);
+    } catch (err) {
+      console.error("❌ Error fetching results:", err);
     }
   };
 
   return (
     <div className="window">
-      <h1 className="text-lg font-bold">🔎 Vulnerability Scanner</h1>
+      <h1 className="text-lg font-bold mb-2">🔎 Vulnerability Scanner</h1>
       <form
         onSubmit={startScan}
         className="flex items-center justify-center gap-x-5"
       >
         <input
           type="text"
-          placeholder="Enter URL to scan"
+          placeholder="Enter URL"
           className="input-box"
           value={url}
           onChange={(e) => setUrl(e.target.value)}
@@ -93,10 +82,16 @@ const ScannerForm = () => {
           className="btn w-20! text-center"
           disabled={loading}
         >
-          {loading ? <FaSyncAlt className="animate-spin" /> : <FaRocket />}
+          {loading ? (
+            <FaSyncAlt className="animate-spin mx-auto" />
+          ) : (
+            <FaRocket className="mx-auto" />
+          )}
         </button>
       </form>
+
       <TerminalOutput output={output} />
+      <VulnerabilitiesTable vulnerabilities={vulnerabilities} />
     </div>
   );
 };
