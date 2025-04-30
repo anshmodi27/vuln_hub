@@ -1,0 +1,53 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# C extensions
+*.so
+
+# Virtual environment
+venv/
+.env
+
+# macOS specific
+.DS_Store
+
+# Python specific
+pyvenv.cfg
+
+# VS Code
+.vscode/
+
+# Node modules
+frontend/node_modules/
+frontend/ .env
+
+# Log files
+*.log
+
+# System files
+Thumbs.db
+
+# Build outputs
+dist/
+build/
+
+# Temporary files
+*.tmp
+*.swp
+*.swo
+
+# Office temporary files
+docs/~$*
+
+# Coverage reports
+htmlcov/
+.coverage
+coverage.xml
+.cache
+
+# React/Vite related
+frontend/dist/
+frontend/.vite/
