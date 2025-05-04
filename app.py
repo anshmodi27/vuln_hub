@@ -22,6 +22,7 @@ def add_protocol_if_missing(url):
     return url
 
 def get_ai_remediation(vulnerability, risk, description):
+    start_time = time.time()
     prompt = {
         "contents": [{
             "parts": [{
@@ -40,6 +41,8 @@ def get_ai_remediation(vulnerability, risk, description):
         url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={GEMINI_API_KEY}"
         headers = {"Content-Type": "application/json"}
         response = requests.post(url, headers=headers, json=prompt)
+        end_time = time.time()  # End AI timer
+        print(f"[AI] Gemini API response time: {end_time - start_time:.2f} seconds")
 
         if response.status_code == 200:
             output = response.json()
@@ -62,6 +65,7 @@ def scan():
 
     target_url = add_protocol_if_missing(target_url)
     scan_results = []
+    scan_start = time.time()  
 
     def generate():
         try:
@@ -124,6 +128,9 @@ def scan():
 
             yield "✅ All data fetched.\n"
 
+            scan_end = time.time()
+            print(f"[SCAN] Total Scan Time for {target_url}: {scan_end - scan_start:.2f}s")
+
         except Exception as e:
             yield f"❌ Error: {str(e)}\n"
 
@@ -140,7 +147,10 @@ def whois_lookup():
     if not domain:
         return jsonify({"error": "No domain provided!"}), 400
     try:
+        whois_start = time.time()
         w = whois.whois(domain)
+        whois_end = time.time()
+        print(f"[WHOIS] Lookup time for {domain}: {whois_end - whois_start:.2f}s")
         result = ""
         for key, value in w.items():
             result += f"{key}: {value}\n"
