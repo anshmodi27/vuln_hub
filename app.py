@@ -4,6 +4,8 @@ import time
 import google.generativeai as genai
 from flask_cors import CORS
 import whois
+import json
+import os
 
 app = Flask(__name__)
 CORS(app)
@@ -11,11 +13,12 @@ CORS(app)
 ZAP_URL = "http://localhost:8080"
 API_KEY = "btdtij1f6ptv2i2a80mikbp9s6"
 GEMINI_API_KEY = "AIzaSyDw7RJPROXNQ-4EGmsD-kUkCoYxbIqXGao"
+RESULTS_FILE = "scan_results.json"
 
 # app.config["last_scan"] = []  # Storage for final vulnerabilities
 
 # At the top of app.py
-scan_results_store = []
+# scan_results_store = []
 
 genai.configure(api_key=GEMINI_API_KEY)
 
@@ -137,7 +140,9 @@ def scan():
             #     app.config["last_scan"] = scan_results
 
             global scan_results_store
-            scan_results_store = local_results
+            # scan_results_store = local_results
+            with open(RESULTS_FILE, "w") as f:
+                json.dump(local_results, f)
             yield "✅ All data fetched.\n"
 
             scan_end = time.time()
@@ -151,7 +156,13 @@ def scan():
 
 @app.route("/results", methods=["GET"])
 def results():
-    return jsonify(scan_results_store)
+    # return jsonify(scan_results_store)
+    if os.path.exists(RESULTS_FILE):
+        with open(RESULTS_FILE, "r") as f:
+            data = json.load(f)
+            return jsonify(data)
+    else:
+        return jsonify([])  # Empty list if no scan yet
 
 @app.route("/whois", methods=["POST"])
 def whois_lookup():
