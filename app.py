@@ -124,9 +124,12 @@ def scan():
                         "remediation": remediation
                     })
 
-                    app.config["last_scan"] = scan_results
-
             yield "✅ All data fetched.\n"
+
+            def generate_and_store():
+                for chunk in generate():
+                 yield chunk
+                app.config["last_scan"] = scan_results
 
             scan_end = time.time()
             print(f"[SCAN] Total Scan Time for {target_url}: {scan_end - scan_start:.2f}s")
