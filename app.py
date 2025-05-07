@@ -12,7 +12,10 @@ ZAP_URL = "http://localhost:8080"
 API_KEY = "btdtij1f6ptv2i2a80mikbp9s6"
 GEMINI_API_KEY = "AIzaSyDw7RJPROXNQ-4EGmsD-kUkCoYxbIqXGao"
 
-app.config["last_scan"] = []  # Storage for final vulnerabilities
+# app.config["last_scan"] = []  # Storage for final vulnerabilities
+
+# At the top of app.py
+scan_results_store = []
 
 genai.configure(api_key=GEMINI_API_KEY)
 
@@ -65,7 +68,9 @@ def scan():
 
     target_url = add_protocol_if_missing(target_url)
     scan_results = []
-    scan_start = time.time()  
+    scan_start = time.time()
+
+    local_results = []
 
     def generate():
         try:
@@ -117,19 +122,23 @@ def scan():
                     desc = alert.get("description", "No description available.")
                     remediation = get_ai_remediation(vuln_name, risk, desc)
 
-                    scan_results.append({
+                    local_results.append({
                         "vulnerability": vuln_name,
                         "risk": risk,
                         "description": desc,
                         "remediation": remediation
                     })
 
-            yield "✅ All data fetched.\n"
+           
 
-            def generate_and_store():
-                for chunk in generate():
-                 yield chunk
-                app.config["last_scan"] = scan_results
+            # def generate_and_store():
+            #     for chunk in generate():
+            #      yield chunk
+            #     app.config["last_scan"] = scan_results
+
+            global scan_results_store
+            scan_results_store = local_results
+            yield "✅ All data fetched.\n"
 
             scan_end = time.time()
             print(f"[SCAN] Total Scan Time for {target_url}: {scan_end - scan_start:.2f}s")
@@ -142,7 +151,7 @@ def scan():
 
 @app.route("/results", methods=["GET"])
 def results():
-    return jsonify(app.config.get("last_scan", []))
+    return jsonify(scan_results_store)
 
 @app.route("/whois", methods=["POST"])
 def whois_lookup():
